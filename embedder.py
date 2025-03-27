@@ -1,20 +1,32 @@
-import os
 import requests
-from dotenv import load_dotenv
+import yaml
 
-load_dotenv()
-SILICONFLOW_API_KEY = os.getenv("SILICONFLOW_API_KEY")
 
-def get_embedding(text):
-    url = "https://api.siliconflow.cn/v1/embeddings"
+def load_config():
+    with open("config.yml", "r", encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+
+_config = load_config()
+_EMBEDDING_URL = _config["embedding"]["api_url"]
+_EMBEDDING_MODEL = _config["embedding"]["model"]
+_API_KEY = _config["embedding"]["api_key"]
+
+
+def get_embedding(text: str):
     headers = {
-        "Authorization": f"Bearer {SILICONFLOW_API_KEY}",
+        "Authorization": f"Bearer {_API_KEY}",
         "Content-Type": "application/json"
     }
+
     payload = {
-        "model": "BAAI/bge-m3",
+        "model": _EMBEDDING_MODEL,
         "input": text,
         "encoding_format": "float"
     }
-    response = requests.post(url, json=payload, headers=headers)
+
+    response = requests.post(_EMBEDDING_URL, headers=headers, json=payload)
+    if response.status_code != 200:
+        raise Exception(f"Embedding API Error: {response.text}")
+
     return response.json()["data"][0]["embedding"]

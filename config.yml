@@ -1,0 +1,21 @@
+server:
+  port: 5000
+
+paths:
+  blog_post_dir: D:/Blog/source/_posts
+  vector_store: D:/Personal_Project/HexoAgent/vector_store.json
+  title_mapping: D:/Personal_Project/HexoAgent/title_mapping.json
+
+blog:
+  base_url: https://evannzhongg.github.io
+
+embedding:
+  max_characters: 10000
+  model: BAAI/bge-m3
+  api_url: https://api.siliconflow.cn/v1/embeddings
+  api_key: sk-vynuimtwurtwtkyhioqdgxsrswepibayxcfxhwynrmrgzfdu
+
+chat:
+  model: deepseek-chat
+  api_url: https://api.deepseek.com
+  api_key: sk-f43a3394eb0945eaa9751609c36cbcf1

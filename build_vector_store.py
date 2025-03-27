@@ -2,19 +2,20 @@ import os
 import json
 import markdown
 import frontmatter
-from embedder import get_embedding
+from embedder import get_embedding, load_config
 from datetime import datetime
 import sys
 import io
 import re
 
-# 设置 stdout 编码
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+config = load_config()
 
-POST_PATH = r"D:\Blog\source\_posts"
-VECTOR_STORE_PATH = "D:/Personal_Project/HexoAgent/vector_store.json"
-MAPPING_PATH = "D:/Personal_Project/HexoAgent/title_mapping.json"
-BASE_URL = "https://evannzhongg.github.io"
+POST_PATH = config["paths"]["blog_post_dir"]
+OUTPUT_PATH = config["paths"]["vector_store"]
+MAPPING_PATH = config["paths"]["title_mapping"]
+BASE_URL = config["blog"]["base_url"]
+MAX_CHARS = config["embedding"]["max_characters"]
 
 def extract_main_heading(md_text):
     match = re.search(r"^# (.+)$", md_text, re.MULTILINE)
@@ -44,19 +45,17 @@ def build_vector_store():
             url_title = title.replace(" ", "-").replace("/", "-")
             full_url = f"{BASE_URL}/{date_path}/{url_title}/"
 
-            # 提取一级标题
             main_heading = extract_main_heading(content_md)
 
-            embedding = get_embedding(text[:5000])
+            embedding = get_embedding(text[:MAX_CHARS])
             vector_store.append({
                 "title": title,
-                "text": text[:5000],
+                "text": text[:MAX_CHARS],
                 "path": filepath,
                 "url": full_url,
                 "embedding": embedding
             })
 
-            # 保存映射
             if main_heading:
                 mapping_table.append({
                     "main_heading": main_heading,
@@ -64,13 +63,12 @@ def build_vector_store():
                     "permalink": full_url
                 })
 
-    with open(VECTOR_STORE_PATH, "w", encoding="utf-8") as f:
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         json.dump(vector_store, f, ensure_ascii=False, indent=2)
-
     with open(MAPPING_PATH, "w", encoding="utf-8") as f:
         json.dump(mapping_table, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ 向量库已保存到 {VECTOR_STORE_PATH}")
+    print(f"✅ 向量库已保存到 {OUTPUT_PATH}")
     print(f"✅ 标题映射表已保存到 {MAPPING_PATH}")
 
 if __name__ == "__main__":
