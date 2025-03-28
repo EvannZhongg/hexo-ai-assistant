@@ -230,6 +230,3 @@ Note: Using Ngrok for production is not secure. You should consider using a prox
 4. Use the chat frontend to ask questions; requests are routed via Ngrok if needed.
 5. The model responds using retrieved content, with proper references and permalinks.
 
----
-
-Let me know if you want the **README.md** version or GitHub badge support.
