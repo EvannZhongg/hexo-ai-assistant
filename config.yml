@@ -13,9 +13,9 @@ embedding:
   max_characters: 10000
   model: BAAI/bge-m3
   api_url: https://api.siliconflow.cn/v1/embeddings
-  api_key: sk-vynuimtwurtwtkyhioqdgxsrswepibayxcfxhwynrmrgzfdu
+  api_key: sk-********
 
 chat:
   model: deepseek-chat
   api_url: https://api.deepseek.com
-  api_key: sk-f43a3394eb0945eaa9751609c36cbcf1
+  api_key: sk-********
