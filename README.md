@@ -49,7 +49,7 @@ paths:
   title_mapping: title_mapping.json                   # 博客标题映射表路径，建议使用绝对路径
 
 blog:
-  base_url: https://your-github-pages-url.github.io   # 📝 修改为你的博客地址（不含末尾 /）
+  base_url: https://your-github-pages-url.github.io   # 修改为你的博客地址（不含末尾 /）
 
 embedding:
   api_url: https://api.siliconflow.cn/v1/embeddings    # 嵌入模型 API 地址
@@ -131,18 +131,6 @@ ngrok http 5000
 
 ---
 
-## 🧪 6. 测试接口
-
-```bash
-curl -X POST http://127.0.0.1:5000/ask \
-  -H "Content-Type: application/json" \
-  -d "{\"query\": \"如何为 Hexo 添加复制按钮功能？\"}"
-```
-
-响应格式为 Markdown，可直接展示在前端聊天框。
-
----
-
 ## 💡 常用命令速览
 
 ```bash
@@ -157,14 +145,6 @@ ngrok http 5000
 ```
 
 ---
-
-## 🧩 对接前端（chat.html）
-
-将前端 `chat.html` 中的地址修改为：
-
-```js
-fetch("https://hexo-ai-assistant.xxx.workers.dev", {...})
-```
 
 即可实现完整博客问答体验。
 
