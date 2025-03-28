@@ -2,6 +2,8 @@
 
 This project combines vector retrieval and large language models (RAG) to create a semantic-based intelligent Q&A interface for your local Hexo blog.
 
+![image](https://github.com/user-attachments/assets/40f5a3c5-74a6-453b-b83b-6152c5b40990)
+
 ---
 
 ## Project Structure
