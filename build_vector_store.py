@@ -68,8 +68,8 @@ def build_vector_store():
     with open(MAPPING_PATH, "w", encoding="utf-8") as f:
         json.dump(mapping_table, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ 向量库已保存到 {OUTPUT_PATH}")
-    print(f"✅ 标题映射表已保存到 {MAPPING_PATH}")
+    print(f"向量库已保存到 {OUTPUT_PATH}")
+    print(f"标题映射表已保存到 {MAPPING_PATH}")
 
 if __name__ == "__main__":
     build_vector_store()
