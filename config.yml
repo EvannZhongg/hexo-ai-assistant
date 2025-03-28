@@ -1,21 +1,21 @@
 server:
-  port: 5000
+  port: 5000                                          # Local server port (default 5000)
 
 paths:
-  blog_post_dir: D:/Blog/source/_posts
-  vector_store: D:/Personal_Project/HexoAgent/vector_store.json
-  title_mapping: D:/Personal_Project/HexoAgent/title_mapping.json
+  blog_post_dir: /your/path/to/hexo/source/_posts     # Change to your blog Markdown path
+  vector_store: vector_store.json                     # Vector store output path, use absolute if preferred
+  title_mapping: title_mapping.json                   # Title mapping output path, use absolute if preferred
 
 blog:
-  base_url: https://evannzhongg.github.io
+  base_url: https://your-github-pages-url.github.io   # Change to your blog base URL (no trailing slash)
 
 embedding:
-  max_characters: 10000
-  model: BAAI/bge-m3
-  api_url: https://api.siliconflow.cn/v1/embeddings
-  api_key: sk-********
+  max_characters: 10000                                # Maximum characters per article to embed
+  model: BAAI/bge-m3                                   # Embedding model name
+  api_url: https://api.siliconflow.cn/v1/embeddings    # Embedding model API
+  api_key: <YOUR_EMBEDDING_API_KEY>                    # Replace with your embedding API key
 
 chat:
-  model: deepseek-chat
-  api_url: https://api.deepseek.com
-  api_key: sk-********
+  model: deepseek-chat                                 # Chat model name
+  api_url: https://api.deepseek.com                    # Chat model API endpoint (can be OpenAI compatible)
+  api_key: <YOUR_CHAT_API_KEY>                         # Replace with your LLM API key
