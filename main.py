@@ -62,7 +62,7 @@ def ask():
     history.append({"role": "user", "content": query})
 
     messages = [
-        {"role": "system", "content": "你是一个 Hexo 博客智能问答助手，擅长结合博客内容给出精准、引用明确的解答。请在回答中引用使用到的博客标题，并附上链接。"},
+        {"role": "system", "content": "你是一个 Hexo 博客智能问答助手，擅长结合博客内容给出精准、引用明确的解答，回答尽量精简不要涉及到代码。请在回答中引用使用到的博客标题，并附上链接。"},
         {"role": "user", "content": context_prompt}
     ] + history
 
