@@ -1,154 +1,221 @@
 # hexo-ai-assistant
-![image](https://github.com/user-attachments/assets/5ab19977-e605-412e-91cc-d7d33fd962b8)
+
+This project combines vector retrieval and large language models (RAG) to create a semantic-based intelligent Q&A interface for your local Hexo blog.
 
 ---
 
-### Hexo 博客智能问答助手 - 后端使用说明
-
-> 本项目通过向量检索 + 大语言模型（RAG）结合本地 Hexo 博客内容，实现基于语义的智能问答接口。
-
----
-
-## 项目结构
+## Project Structure
 
 ```
 HexoAgent/
 │
-├── build_vector_store.py       # 向量库和标题映射构建脚本
-├── main.py                     # Flask 主服务入口（/ask 问答接口）
-├── embedder.py                 # 嵌入向量生成器（调用第三方 API）
-├── chat.py                     # 通用 LLM 聊天模块（OpenAI / DeepSeek）
-├── vector_store.json           # 本地语义向量数据库（自动生成）
-├── title_mapping.json          # 博客标题与链接映射表（自动生成）
-├── config.yml                  # 所有路径、模型、API Key 配置集中管理
-└── .venv/                      # 虚拟环境（可选）
+├── build_vector_store.py       # Script to generate vector store and title mapping
+├── main.py                     # Flask main service entry (/ask endpoint)
+├── embedder.py                 # Embedding generator (calls third-party API)
+├── chat.py                     # Universal LLM chat module (OpenAI / DeepSeek)
+├── vector_store.json           # Local semantic vector database (auto-generated)
+├── title_mapping.json          # Blog title-to-link mapping table (auto-generated)
+├── config.yml                  # Centralized configuration for paths, models, API keys
+└── .venv/                      # Virtual environment (optional)
 ```
 
 ---
 
-## 1. 安装依赖
+## Execution Principle (Project Workflow)
 
-建议使用虚拟环境：
+1. **Semantic Knowledge Construction Stage** (executed by `build_vector_store.py`):
+   - Scans blog Markdown source files and extracts article content.
+   - Generates semantic vectors using embedding models (e.g., BGE).
+   - Builds `vector_store.json` and `title_mapping.json` for later use in Q&A.
+
+2. **User Q&A Handling Stage** (provided by `main.py` API):
+   - Users send questions via the frontend.
+   - The backend converts the query to an embedding and finds related articles.
+   - Constructs a prompt with semantic content and a title index, and sends it to the language model.
+   - The model returns an answer with reference links, streamed to the frontend.
+
+3. **Frontend Q&A Display Stage** (handled by `chat.html` / `chatbot.ejs`):
+   - Loads a chat interface that supports Markdown rendering and multi-turn conversation.
+   - Requests are forwarded to the local backend or a public proxy address.
+
+---
+
+## 1. Install Dependencies
+
+It is recommended to use a virtual environment:
 
 ```bash
-# 创建环境
 python -m venv .venv
-# 激活环境（Windows）
 .venv\Scripts\activate
-# 安装依赖
 pip install -r requirements.txt
 ```
 
 ---
 
-## 2. 配置项修改（`config.yml`）
+## 2. Modify Configuration (`config.yml`)
 
 ```yaml
 paths:
-  blog_post_dir: /your/path/to/hexo/source/_posts     # 修改为你的博客 Markdown 路径
-  vector_store: vector_store.json                     # 向量库保存路径，建议使用绝对路径
-  title_mapping: title_mapping.json                   # 博客标题映射表路径，建议使用绝对路径
+  blog_post_dir: /your/path/to/hexo/source/_posts     # Change to your blog Markdown path
+  vector_store: vector_store.json                     # Vector store output path, use absolute if preferred
+  title_mapping: title_mapping.json                   # Title mapping output path, use absolute if preferred
 
 blog:
-  base_url: https://your-github-pages-url.github.io   # 修改为你的博客地址（不含末尾 /）
+  base_url: https://your-github-pages-url.github.io   # Change to your blog base URL (no trailing slash)
 
 embedding:
-  api_url: https://api.siliconflow.cn/v1/embeddings    # 嵌入模型 API 地址
-  model: BAAI/bge-large-zh-v1.5                         # 使用的中文嵌入模型
-  api_key: <YOUR_EMBEDDING_API_KEY>                    # 替换为你的嵌入模型 API Key
-  max_characters: 5000                                 # 每篇文章最大截取字符数
+  api_url: https://api.siliconflow.cn/v1/embeddings    # Embedding model API
+  model: BAAI/bge-large-zh-v1.5                         # Embedding model name
+  api_key: <YOUR_EMBEDDING_API_KEY>                    # Replace with your embedding API key
+  max_characters: 5000                                 # Maximum characters per article to embed
 
 chat:
-  api_url: https://api.deepseek.com/v1                 # Chat 模型 API 地址（可替换为 OpenAI）
-  model: deepseek-chat                                 # 使用的模型名称
-  api_key: <YOUR_CHAT_API_KEY>                         # 替换为你的 LLM 接口 Key
+  api_url: https://api.deepseek.com/v1                 # Chat model API endpoint (can be OpenAI compatible)
+  model: deepseek-chat                                 # Chat model name
+  api_key: <YOUR_CHAT_API_KEY>                         # Replace with your LLM API key
 
 server:
-  port: 5000                                           # 后端服务运行端口（默认5000）
-
+  port: 5000                                           # Local server port (default 5000)
 ```
 
 ---
 
-## 3. 构建向量库 & 标题映射表
+## 3. Build Vector Store & Title Mapping
 
 ```bash
 python build_vector_store.py
 ```
 
-生成文件：
+Generated files:
 
-- `vector_store.json`: 含每篇文章的文本和语义向量
-- `title_mapping.json`: 含每篇文章的标题 + 主标题 + 链接
+- `vector_store.json`: Contains each article's text and semantic embedding
+- `title_mapping.json`: Contains title, main heading, and permalink for each article
 
-博客格式续遵循以下格式：
+Markdown format requirements:
+
 ```
 ---
 title: Article Title
 date: YYYY-MM-DD HH:mm:ss
-tags: [No impact]
-categories: No impact
+tags: [...]  # No impact
+categories: ...  # No impact
 ---
-# Main Title
+# Main Title  # Must be a first level title
 
-Text content.
+Content...
 ```
 
 ---
 
-## 4. 启动后端问答服务
+## 4. Start the Backend Q&A Service
 
 ```bash
 python main.py
-# 或使用自动 reload
-flask run --port 5000
 ```
 
-将启动本地服务：
+After startup, the local API will be available at:
+
 ```
 http://127.0.0.1:5000/ask
 ```
 
+You can open `chat.html` in the browser to test and check if the answers are returned properly.
+
 ---
 
-使用 Ngrok 暴露本地服务：
+## 5. Configure Hexo Script
 
-```bash
-ngrok http 5000
-```
+If everything above works correctly, integrate vector building into the Hexo generation flow.
 
-将 Ngrok 地址填入 `chatbot.ejs` 的链接中：
+### 1. Create Script File `scripts/auto_vector.js`:
 
-```
-    const response = await fetch('https://***.ngrok-free.app/ask', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({ query })
+```js
+const { exec } = require("child_process");
+
+hexo.extend.filter.register("before_generate", function () {
+  console.log("Building blog vector store...");
+  return new Promise((resolve, reject) => {
+    exec("D:/your_project/.venv/Scripts/python build_vector_store.py", {
+      cwd: "D:/your_project"
+    }, (err, stdout, stderr) => {
+      if (err) {
+        console.error("Build failed:", stderr);
+        reject(err);
+      } else {
+        console.log("Build succeeded");
+        resolve();
+      }
     });
+  });
+});
 ```
 
-访问你的模型问答接口。
+This script ensures the vector store is rebuilt automatically whenever `hexo g` is executed.
+
+### 2. Include `chatbot.ejs` in Page Footer
+
+Open the following file:
+
+```
+themes/hexo-theme-Chic/layout/_partial/footer.ejs
+```
+
+Add after the `</footer>` tag:
+
+```html
+<%- partial('chatbot') %>
+```
+
+Create a new file `chatbot.ejs` in:
+
+```
+themes/hexo-theme-Chic/layout/_partial/chatbot.ejs
+```
+
+Paste the contents of `chatbot.ejs` (see the project repo for full code).
+
+Rebuild and preview your Hexo site:
+
+```bash
+hexo clean
+hexo g
+hexo d
+```
+
+The result should be similar to:
+
+```
+[screenshot image here]
+```
 
 ---
 
-## 💡 常用命令速览
+## 6. Expose Local Backend via Ngrok (Optional)
+
+After confirming local success, use Ngrok to expose your service:
 
 ```bash
-# 构建向量库
-python build_vector_store.py
-
-# 启动后端服务
-python main.py
-
-# 启动穿透（需安装 ngrok）
 ngrok http 5000
 ```
 
+Copy the address `https://xxx.ngrok-free.app/ask` into your frontend `chatbot.ejs`:
+
+```js
+const response = await fetch("https://xxx.ngrok-free.app/ask", {...});
+```
+
+Note: Using Ngrok for production is not secure. You should consider using a proxy or deploy your backend to a public server.
+
 ---
 
-即可实现完整博客问答体验。
+## Full Workflow Summary
+
+1. Write blog posts in Markdown format (ensuring required metadata and main heading).
+2. Run `build_vector_store.py` to extract and embed blog content.
+3. Launch `main.py` to start the local Q&A API.
+4. Use the chat frontend to ask questions; requests are routed via Ngrok if needed.
+5. The model responds using retrieved content, with proper references and permalinks.
 
 ---
 
-如需将此说明导出为 `.md` 文档，我也可以直接帮你生成。是否要我输出为 `README.md` 文件并写入本地？
+Let me know if you want the **README.md** version or GitHub badge support.
