@@ -7,16 +7,28 @@ This project combines vector retrieval and large language models (RAG) to create
 ## Project Structure
 
 ```
-HexoAgent/
+📁 D:/YourProjects/
+├── 📁 Blog/                              # Hexo blog project directory (initialized via `hexo init`)
+│   ├── source/_posts/                   # Markdown blog post files
+│   ├── themes/hexo-theme-xxx/           # Custom Hexo theme
+│   │   ├── layout/_partial/
+│   │   │   ├── footer.ejs               # Inject chatbot here via partial
+│   │   │   ├── chatbot.ejs              # Chatbot UI template (included in footer)
+│   │   │   └── ...
+│   │   └── ...  
+│   ├── scripts/auto_vector.js           # Auto vector builder (executed via Hexo lifecycle)
+│   └── ...                              # Other Hexo configuration files
 │
-├── build_vector_store.py       # Script to generate vector store and title mapping
-├── main.py                     # Flask main service entry (/ask endpoint)
-├── embedder.py                 # Embedding generator (calls third-party API)
-├── chat.py                     # Universal LLM chat module (OpenAI / DeepSeek)
-├── vector_store.json           # Local semantic vector database (auto-generated)
-├── title_mapping.json          # Blog title-to-link mapping table (auto-generated)
-├── config.yml                  # Centralized configuration for paths, models, API keys
-└── .venv/                      # Virtual environment (optional)
+├── 📁 hexo-ai-assistant/                # AI Q&A backend project (retrieval-augmented generation)
+│   ├── build_vector_store.py            # Script to build semantic vector DB and title mapping
+│   ├── main.py                          # Flask server entry point exposing `/ask` endpoint
+│   ├── embedder.py                      # Embedding generator (calls external API)
+│   ├── chat.py                          # Unified LLM API client (OpenAI / DeepSeek compatible)
+│   ├── vector_store.json                # Semantic vector store (auto-generated)
+│   ├── title_mapping.json               # Blog title ↔ permalink mapping table (auto-generated)
+│   ├── config.yml                       # Centralized config for paths, API keys, and models
+│   └── .venv/                           # Python virtual environment (optional)
+
 ```
 
 ---
