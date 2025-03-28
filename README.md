@@ -1,4 +1,5 @@
 # hexo-ai-assistant
+![image](https://github.com/user-attachments/assets/5ab19977-e605-412e-91cc-d7d33fd962b8)
 
 ---
 
