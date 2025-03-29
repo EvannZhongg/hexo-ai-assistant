@@ -48,7 +48,7 @@ This project combines vector retrieval and large language models (RAG) to create
    - Constructs a prompt with semantic content and a title index, and sends it to the language model.
    - The model returns an answer with reference links, streamed to the frontend.
 
-3. **Frontend Q&A Display Stage** (handled by `chat.html` / `chatbot.ejs`):
+3. **Frontend Q&A Display Stage** (handled by `chatbot.ejs`):
    - Loads a chat interface that supports Markdown rendering and multi-turn conversation.
    - Requests are forwarded to the local backend or a public proxy address.
 
